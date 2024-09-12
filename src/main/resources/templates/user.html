@@ -1,11 +1,89 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
 <head>
-    <title>Spring Security Example</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>User panel</title>
+    <meta charset="UTF-8">
 </head>
-<body>
-<h1>User, welcome spring boot security page!</h1>
+<body class="d-flex flex-column min-vh-100">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+    <div class="nav-item d-flex flex-row text-white justify-content-center align-items-center" th:object="${user}"
+         style="font-size: 1.5rem;">
+        <span class="font-weight-bolder text-default" th:text="${user.getUsername()}"></span>
+        <span class="ml-2"> with role: </span>
+        <span class="ml-2" th:each="role : ${user.getUserRoles()}" th:text="${role.getRoleName()} + ' '"></span>
+    </div>
+    <form class="form-inline my-2 my-lg-0 ml-auto" th:method="GET" th:action="@{/user/logout}">
+        <input class="btn btn-link text-secondary mb-0" type="submit" value="Logout"/>
+    </form>
+</nav>
+
+<div class="container-fluid d-flex flex-column flex-grow-1">
+    <div class="row flex-grow-1">
+        <nav class="d-none d-md-block bg-default sidebar p-0 pt-3 col-md-2 vh-65">
+            <ul class="d-flex flex-column list-unstyled w-100">
+                <li class="d-flex justify-content-between" th:each="userRole : ${user.getUserRoles()}"
+                    th:if="${userRole.authority.contains('ROLE_ADMIN')}">
+                    <a class=" btn btn-links text-left w-100" th:href="@{/admin}">
+                        Admin
+                    </a>
+                </li>
+                <li class="d-flex justify-content-between">
+                    <a class="btn  btn-primary   text-left w-100" aria-current="page" th:href="@{/user}">
+                        User
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
 
+        <!-- Главный контент -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-5 bg-light">
+            <h1 class="mt-3 mb-3">User information-page</h1>
+            <div class="row border pl-3">
+                <h5 class="m-2">About user</h5>
+            </div>
+            <div class="row border pl-3">
+                <table class="table table-striped table-hover mt-3">
+                    <thead>
+                    <tr class="font-weight-bold">
+                        <th>Id</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Age</th>
+                        <th>Login</th>
+                        <th>Role</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:object="${user}">
+                        <td th:text="${user.getId()}"></td>
+                        <td th:text="${user.getFirstName()}"></td>
+                        <td th:text="${user.getSecondName()}"></td>
+                        <td th:text="${user.getAge()}"></td>
+                        <td th:text="${user.getUsername()}"></td>
+                        <td>
+                            <span th:each="role : ${user.getUserRoles()}" th:text="${role.getRoleName()} + '; '"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
