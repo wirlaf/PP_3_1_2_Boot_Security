@@ -11,6 +11,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     User findUserByUsername(String username);
 
-    @Query("select distinct t from User t left join fetch t.userRoles")
+    @Query("select distinct u from User u left join fetch u.userRoles")
     List<User> findAllWithRoles();
 }

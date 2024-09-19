@@ -42,26 +42,14 @@ public class AdminController {
 
     @PostMapping(value = "/createUser")
     public String create(@ModelAttribute("user") User user, @RequestParam(name = "roles", required = false) List<Integer> roleId) {
-        Set<Role> roleSet = new HashSet<>();
-        if (roleId != null) {
-            for (Integer role : roleId) {
-                roleSet.add(roleService.findRoleById(role));
-            }
-            user.setUserRoles(roleSet);
-        }
+        setUserRoles(user, roleId);
         userService.create(user);
         return "redirect:/admin";
     }
 
     @PostMapping(value = "/updateUser")
     public String update(@ModelAttribute("editedUser") User user, @RequestParam(name = "roles", required = false) List<Integer> roleId) {
-        Set<Role> roleSet = new HashSet<>();
-        if (roleId != null) {
-            for (Integer role : roleId) {
-                roleSet.add(roleService.findRoleById(role));
-            }
-            user.setUserRoles(roleSet);
-        }
+        setUserRoles(user, roleId);
         userService.update(user);
         return "redirect:/admin";
     }
@@ -70,5 +58,13 @@ public class AdminController {
     public String delete(@RequestParam("userId") Integer userId) {
         userService.deleteUserById(userId);
         return "redirect:/admin";
+    }
+
+    private void setUserRoles(User user, List<Integer> roleId) {
+        Set<Role> roleSet = new HashSet<>();
+        if (roleId != null) {
+            roleId.forEach(id -> roleSet.add(roleService.findRoleById(id)));
+        }
+        user.setUserRoles(roleSet);
     }
 }
