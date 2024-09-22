@@ -36,42 +36,40 @@ public class UserServiceImpl implements UserService {
         return userRepository.getById(id);
     }
 
+    @Transactional
     @Override
     public void create(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
-    @Override
     @Transactional
+    @Override
     public void update(User user) {
-        User existingUser = userRepository.findById(user.getId()).orElseThrow();
-        user.setPassword(existingUser.getPassword());
-        user.setUserRoles(existingUser.getUserRoles());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
-    @Override
     @Transactional
+    @Override
     public void deleteUserById(Integer id) {
-    userRepository.deleteById(id);
+        userRepository.deleteById(id);
     }
 
-    @Override
     @Transactional(readOnly = true)
+    @Override
     public User findByUsername(String username) {
         return userRepository.findUserByUsername(username);
     }
 
-    @Override
     @Transactional(readOnly = true)
+    @Override
     public List<User> findAllWithRoles() {
         return userRepository.findAllWithRoles();
     }
 
-    @Override
     @Transactional(readOnly = true)
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findUserByUsername(username);
     }
