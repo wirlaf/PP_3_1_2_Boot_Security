@@ -225,18 +225,22 @@
                                                                    id="editModalPassword"
                                                                    minlength="4"
                                                                    name="password"
-                                                                   required type="password"/>
+                                                                   th:value="${editedUser.getPassword()}"
+                                                                   type="password"/>
                                                         </div>
-                                                        <label class="font-weight-bold form-label fw-bold">Role</label>
-                                                        <div class="form-group col-6 mx-auto">
+
+                                                        <div class="form-group mb-2 col-6 mx-auto">
+                                                            <label class="font-weight-bold form-label fw-bold">Role:</label>
                                                             <select class="col-12 mx-auto" multiple
                                                                     name="roles" required size="2">
                                                                 <option th:each="role : ${allroles}"
                                                                         th:text="${role.getAuthority()}"
-                                                                        th:value="${role.getId()}">
+                                                                        th:value="${role.getId()}"
+                                                                        th:selected="${editedUser.getUserRoles().contains(role)}">
                                                                 </option>
                                                             </select>
                                                         </div>
+
                                                         <div class="modal-footer col-12">
                                                             <button type="button" class="btn btn-secondary"
                                                                     data-dismiss="modal">Close
