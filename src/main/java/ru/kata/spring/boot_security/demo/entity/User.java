@@ -1,6 +1,6 @@
 package ru.kata.spring.boot_security.demo.entity;
 
-import lombok.*;
+import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +13,6 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,5 +80,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getShortRole() {
+        return userRoles.toString().substring(1, userRoles.toString().length() - 1);
     }
 }

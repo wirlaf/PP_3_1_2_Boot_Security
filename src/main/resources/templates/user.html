@@ -9,17 +9,20 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-dark">
-    <div class="nav-item d-flex flex-row text-white justify-content-center align-items-center" th:object="${user}"
-         style="font-size: 1.5rem;">
-        <span class="font-weight-bolder text-default" th:text="${user.getUsername()}"></span>
-        <span class="ml-2"> with role: </span>
-        <span class="ml-2" th:each="role : ${user.getUserRoles()}" th:text="${role.getRoleName()} + ' '"></span>
-    </div>
-    <form class="form-inline my-2 my-lg-0 ml-auto" th:method="GET" th:action="@{/user/logout}">
-        <input class="btn btn-link text-secondary mb-0" type="submit" value="Logout"/>
-    </form>
-</nav>
+<header>
+    <nav class="navbar navbar-dark bg-dark d-flex justify-content-between">
+    <span>
+    <span class="navbar-brand font-weight-bold" id="headerUsername"></span>
+    <span class="navbar-brand"
+          th:text="'with roles: '" id="headerRole"></span>
+    </span>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </nav>
+</header>
 
 <div class="container-fluid d-flex flex-column flex-grow-1">
     <div class="row flex-grow-1">
@@ -40,7 +43,6 @@
         </nav>
 
 
-        <!-- Главный контент -->
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-5 bg-light">
             <h1 class="mt-3 mb-3">User information-page</h1>
             <div class="row border pl-3">
@@ -58,17 +60,7 @@
                         <th>Role</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr th:object="${user}">
-                        <td th:text="${user.getId()}"></td>
-                        <td th:text="${user.getFirstName()}"></td>
-                        <td th:text="${user.getSecondName()}"></td>
-                        <td th:text="${user.getAge()}"></td>
-                        <td th:text="${user.getUsername()}"></td>
-                        <td>
-                            <span th:each="role : ${user.getUserRoles()}" th:text="${role.getRoleName()} + '; '"></span>
-                        </td>
-                    </tr>
+                    <tbody id="userTable">
                     </tbody>
                 </table>
             </div>
@@ -85,5 +77,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+<script type="text/javascript" src="../static/ShowUserInfo.js"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 package ru.kata.spring.boot_security.demo.databaseLoader;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -34,8 +35,8 @@ public class DatabaseInitializer {
             roleRepository.save(userRole);
         }
         if (userRepository.findAll().isEmpty()) {
-            User userFirst = new User("First", "First", 30, "admin", passwordEncoder.encode("admin"));
-            User userSecond = new User("Second", "Second", 25, "user", passwordEncoder.encode("user"));
+            User userFirst = new User("Admin", "Admin", 33, "admin", passwordEncoder.encode("admin"));
+            User userSecond = new User("User", "User", 22, "user", passwordEncoder.encode("user"));
             userFirst.setUserRoles(Set.of(adminRole, userRole));
             userSecond.setUserRoles(Set.of(userRole));
             userRepository.save(userFirst);
@@ -43,3 +44,4 @@ public class DatabaseInitializer {
         }
     }
 }
+
