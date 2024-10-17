@@ -21,5 +21,5 @@ public interface UserService {
 
     List<Role> getAllRoles();
 
-
+    boolean emailExists(String email);
 }

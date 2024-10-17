@@ -49,14 +49,31 @@ public class AdminController {
     }
 
     @PostMapping("/user/new")
-    public String create(
-            @ModelAttribute("user") @Valid User user,
-            BindingResult bindingResult,
-            Model model) {
+    public String create(@ModelAttribute("user") @Valid User user,
+                         BindingResult bindingResult,
+                         @RequestParam(value = "roleIds", required = false) List<String> roleIds,
+                         Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allRoles", userService.getAllRoles());
             return "new";
         }
+        if (userService.emailExists(user.getEmail())) {
+            bindingResult.rejectValue("email", "error.user", "email is already in use");
+            model.addAttribute("allRoles", userService.getAllRoles());
+            return "new";
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Установка ролей
+        Set<Role> userRoles = new HashSet<>();
+        if (roleIds != null) {
+            for (String roleId : roleIds) {
+                Role role = userService.getRoleById(Long.parseLong(roleId));
+                userRoles.add(role);
+            }
+        }
+        user.setRoles(userRoles);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.create(user);
         return "redirect:/admin";
     }
@@ -78,12 +95,7 @@ public class AdminController {
             model.addAttribute("allRoles", userService.getAllRoles());
             return "/edit";
         }
-        User existingUser = userService.getUserById(id);
-        if (!user.getPassword().equals(existingUser.getPassword())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        } else {
-            user.setPassword(existingUser.getPassword());
-        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         Set<Role> userRoles = new HashSet<>();
         for (String roleId : roleIds) {
             Role role = userService.getRoleById(Long.parseLong(roleId));

@@ -21,11 +21,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 4, message = "incorrect length")
+    @Size(min = 2, message = "incorrect length")
     @Pattern(regexp = "^[a-zA-Z]+$", message = "only letters allowed")
     private String firstName;
 
-    @Size(min = 4, message = "incorrect length")
+    @Size(min = 2, message = "incorrect length")
     @Pattern(regexp = "^[a-zA-Z]+$", message = "only letters allowed")
     private String lastName;
 
@@ -40,7 +40,7 @@ public class User implements UserDetails {
     @Size(min = 2, message = "incorrect length")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
 
     @Override
