@@ -57,7 +57,7 @@ public class AdminController {
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allRoles", userService.getAllRoles());
-            return "/new";
+            return "new";
         }
         Set<Role> userRole = new HashSet<>();
         for (String roleId : listRoleId) {
@@ -67,22 +67,9 @@ public class AdminController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(userRole);
         userService.create(user);
-        return "redirect:/admin/user/" + user.getId();
+        return "redirect:/admin";
     }
 
-//    @PostMapping
-//    public String create(@ModelAttribute("user") User user, @RequestParam List<String> listRoleId) {
-//        Set<Role> userRole = new HashSet<>();
-//        for (String roleId : listRoleId) {
-//            Role role = roleService.getRoleById(Long.parseLong(roleId));
-//            userRole.add(role);
-//            user.setPassword(passwordEncoder.encode(user.getPassword()));
-//            user.setRoles(userRole);
-//        }
-//
-//        userService.create(user);
-//        return "redirect:/admin";
-//    }
     @GetMapping("/user/{id}/edit")
     public String edit(Model model, @PathVariable("id") long id) {
         model.addAttribute("user", userService.getUserById(id));
@@ -91,11 +78,11 @@ public class AdminController {
     }
 
     @PostMapping("/user/{id}")
-    public String update(@ModelAttribute("user") @Valid User user,
+    public String update(Model model,
+                         @ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult,
                          @PathVariable("id") long id,
-                         @RequestParam("roles") List<String> roleIds,
-                         Model model) {
+                         @RequestParam("roles") List<String> roleIds) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allRoles", userService.getAllRoles());
             return "/edit";
