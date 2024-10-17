@@ -1,26 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Edit user</title>
+    <title>New user</title>
 </head>
 <body>
 
-<form th:method="POST" th:action="@{/user/{id}(id=${user.getId()})}" th:object="${user}">
-    <label for="name">Enter name: </label>
-    <input type="text" th:field="*{name}" id="name"/>
-    <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
+<form th:method="POST" th:action="@{/admin/user/{id}(id=${user.id})}" th:object="${user}">
+    <label for="username">Enter username: </label>
+    <input type="text" th:field="*{username}" id="username"/>
     <br/>
-    <label for="age">Enter surname: </label>
-    <input type="text" th:field="*{age}" id="age"/>
-    <div style="color: red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Surname error</div>
+
+    <label for="password">Enter password: </label>
+    <input type="password" th:field="*{password}" id="password"/>
     <br/>
-    <label for="email">Enter email: </label>
-    <input type="text" th:field="*{email}" id="email"/>
-    <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error</div>
+    <label for="roles">Select roles: </label>
+    <select th:field="*{roles}" multiple size="2">
+        <option th:each="role : ${allRoles}" th:value="${role.id}"
+                th:text="${role.getAuthority()}" th:selected="${user.roles.contains(role)}"></option>
+    </select>
     <br/>
-    <input type="submit" value="Edit!"/>
+    <input type="submit" value="Save"/>
 </form>
 
-</body>
-</html>
