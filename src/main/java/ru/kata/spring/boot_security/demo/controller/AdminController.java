@@ -51,19 +51,38 @@ public class AdminController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute("user") User user, @RequestParam List<String> listRoleId) {
+    public String create(Model model,
+                         @ModelAttribute("user") @Valid User user,
+                         @RequestParam List<String> listRoleId,
+                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allRoles", userService.getAllRoles());
+            return "/new";
+        }
         Set<Role> userRole = new HashSet<>();
         for (String roleId : listRoleId) {
             Role role = roleService.getRoleById(Long.parseLong(roleId));
             userRole.add(role);
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRoles(userRole);
         }
-
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(userRole);
         userService.create(user);
-        return "redirect:/admin";
+        return "redirect:/admin/user/" + user.getId();
     }
 
+//    @PostMapping
+//    public String create(@ModelAttribute("user") User user, @RequestParam List<String> listRoleId) {
+//        Set<Role> userRole = new HashSet<>();
+//        for (String roleId : listRoleId) {
+//            Role role = roleService.getRoleById(Long.parseLong(roleId));
+//            userRole.add(role);
+//            user.setPassword(passwordEncoder.encode(user.getPassword()));
+//            user.setRoles(userRole);
+//        }
+//
+//        userService.create(user);
+//        return "redirect:/admin";
+//    }
     @GetMapping("/user/{id}/edit")
     public String edit(Model model, @PathVariable("id") long id) {
         model.addAttribute("user", userService.getUserById(id));
@@ -72,8 +91,11 @@ public class AdminController {
     }
 
     @PostMapping("/user/{id}")
-    public String update(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
-                         @PathVariable("id") long id, @RequestParam("roles") List<String> roleIds, Model model) {
+    public String update(@ModelAttribute("user") @Valid User user,
+                         BindingResult bindingResult,
+                         @PathVariable("id") long id,
+                         @RequestParam("roles") List<String> roleIds,
+                         Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allRoles", userService.getAllRoles());
             return "/edit";

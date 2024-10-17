@@ -14,9 +14,14 @@
 <br/>
 <hr/>
 
-<a href="/admin/user/new">Create new user</a>
+<form th:method="get" th:action="@{/admin/user/new}">
+    <input type="hidden" name="_method"/>
+    <input type="submit" value="New user"/>
+</form>
+
 <form th:action="@{/logout}" th:method="POST">
     <input type="submit" value="Logout">
 </form>
+
 </body>
 </html>

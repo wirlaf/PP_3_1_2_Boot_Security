@@ -7,14 +7,33 @@
 <body>
 
 <form th:method="POST" th:action="@{/admin/user/{id}(id=${user.id})}" th:object="${user}">
-    <label for="username">Enter username: </label>
-    <input type="text" th:field="*{username}" id="username"/>
+
+    <label for="firstName">First name: </label>
+    <input type="text" th:field="*{firstName}" id="firstName"/>
+    <div style="color: red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">firstName error</div>
     <br/>
 
-    <label for="password">Enter password: </label>
-    <input type="password" th:field="*{password}" id="password"/>
+    <label for="lastName">Last name: </label>
+    <input type="text" th:field="*{lastName}" id="lastName"/>
+    <div style="color: red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">lastName error</div>
     <br/>
-    <label for="roles">Select roles: </label>
+
+    <label for="age">Age: </label>
+    <input type="text" th:field="*{age}" id="age"/>
+    <div style="color: red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">age error</div>
+    <br/>
+
+    <label for="email">Email: </label>
+    <input type="text" th:field="*{email}" id="email"/>
+    <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">email error</div>
+    <br/>
+
+    <label for="password">Password: </label>
+    <input type="password" th:field="*{password}" id="password"/>
+    <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password error</div>
+    <br/>
+
+    <label for="roles">Role: </label>
     <select th:field="*{roles}" multiple size="2">
         <option th:each="role : ${allRoles}" th:value="${role.id}"
                 th:text="${role.getAuthority()}" th:selected="${user.roles.contains(role)}"></option>

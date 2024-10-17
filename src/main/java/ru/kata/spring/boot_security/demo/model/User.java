@@ -21,13 +21,23 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    @NotEmpty(message = "Field should not be empty")
-    @Size(min = 2, message = "Incorrect length")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Incorrect format")
-    private String username;
+    @Size(min = 4, message = "incorrect length")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "only letters allowed")
+    private String firstName;
 
-    @Size(min = 2, message = "Incorrect length")
+    @Size(min = 4, message = "incorrect length")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "only letters allowed")
+    private String lastName;
+
+    @Positive
+    private int age;
+
+    @Column(unique = true)
+    @Email
+    private String email;
+
+    @NotEmpty(message = "field should not be empty")
+    @Size(min = 2, message = "incorrect length")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -35,7 +45,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
