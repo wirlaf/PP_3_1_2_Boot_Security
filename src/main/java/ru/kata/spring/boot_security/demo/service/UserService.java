@@ -11,7 +11,7 @@ public interface UserService {
 
     void delete(long id);
 
-    void update(User user);
+    void update(Long id, User updatedUser);
 
     User getUserById(long id);
 
@@ -21,5 +21,7 @@ public interface UserService {
 
     List<Role> getAllRoles();
 
+    boolean emailExists(String email);
 
+    User getByEmail(String email);
 }

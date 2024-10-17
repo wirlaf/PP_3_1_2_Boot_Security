@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
-import ru.kata.spring.boot_security.demo.service.RoleService;
 
 import javax.validation.Valid;
 import java.util.HashSet;
@@ -21,12 +19,10 @@ import java.util.Set;
 public class AdminController {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AdminController(UserService userService, PasswordEncoder passwordEncode, RoleService roleService) {
+    public AdminController(UserService userService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncode;
     }
 
     @GetMapping
@@ -35,8 +31,8 @@ public class AdminController {
         return "user";
     }
 
-    @GetMapping("/user/{id}")
-    public String show(@PathVariable("id") long id, Model model) {
+    @GetMapping("/user")
+    public String show(@RequestParam(value = "id") Long id, Model model) {
         model.addAttribute("user", userService.getUserById(id));
         return "show";
     }
@@ -49,14 +45,16 @@ public class AdminController {
     }
 
     @PostMapping("/user/new")
-    public String create(
-            @ModelAttribute("user") @Valid User user,
-            BindingResult bindingResult,
-            Model model) {
-        if (bindingResult.hasErrors()) {
+    public String create(@ModelAttribute("user") @Valid User user,
+                         BindingResult bindingResult,
+                         @RequestParam(value = "roleIds", required = false) List<String> roleIds,
+                         Model model) {
+        if (userService.emailExists(user.getEmail())) {
+            bindingResult.rejectValue("email", "error.user", "email is already in use");
             model.addAttribute("allRoles", userService.getAllRoles());
             return "new";
         }
+        user.setRoles(getRolesFromIds(roleIds));
         userService.create(user);
         return "redirect:/admin";
     }
@@ -78,19 +76,8 @@ public class AdminController {
             model.addAttribute("allRoles", userService.getAllRoles());
             return "/edit";
         }
-        User existingUser = userService.getUserById(id);
-        if (!user.getPassword().equals(existingUser.getPassword())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        } else {
-            user.setPassword(existingUser.getPassword());
-        }
-        Set<Role> userRoles = new HashSet<>();
-        for (String roleId : roleIds) {
-            Role role = userService.getRoleById(Long.parseLong(roleId));
-            userRoles.add(role);
-        }
-        user.setRoles(userRoles);
-        userService.update(user);
+        user.setRoles(getRolesFromIds(roleIds));
+        userService.update(id, user);
         return "redirect:/admin";
     }
 
@@ -98,5 +85,16 @@ public class AdminController {
     public String delete(@PathVariable("id") long id) {
         userService.delete(id);
         return "redirect:/admin";
+    }
+
+    private Set<Role> getRolesFromIds(List<String> roleIds) {
+        Set<Role> userRoles = new HashSet<>();
+        if (roleIds != null) {
+            for (String roleId : roleIds) {
+                Role role = userService.getRoleById(Long.parseLong(roleId));
+                userRoles.add(role);
+            }
+        }
+        return userRoles;
     }
 }

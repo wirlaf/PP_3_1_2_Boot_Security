@@ -34,10 +34,10 @@
     <br/>
 
     <label for="roles">Role: </label>
-    <select multiple size="2" name="listRoleId">
-        <option value="1">ROLE_ADMIN</option>
-        <option selected="selected" value="2">ROLE_USER</option>
-    </select>
+    <div th:each="role : ${allRoles}">
+        <input type="checkbox" th:value="${role.id}" th:name="'roleIds'" />
+        <span th:text="${role.name}"></span><br/>
+    </div>
     <br/>
     <input type="submit" value="Create"/>
 
