@@ -2,11 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Edit user</title>
+    <title>New user</title>
 </head>
 <body>
 
-<form th:method="POST" th:action="@{/admin}" th:object="${user}">
+<form th:method="POST" th:action="@{/admin/user/new}" th:object="${user}">
 
     <label for="firstName">First name: </label>
     <input type="text" th:field="*{firstName}" id="firstName"/>

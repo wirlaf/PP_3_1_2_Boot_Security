@@ -22,13 +22,11 @@ public class AdminController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final RoleService roleService;
 
     @Autowired
     public AdminController(UserService userService, PasswordEncoder passwordEncode, RoleService roleService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncode;
-        this.roleService = roleService;
     }
 
     @GetMapping
@@ -46,26 +44,19 @@ public class AdminController {
     @GetMapping("/user/new")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("allRoles", userService.getAllRoles()); // Передаем все роли в модель
+        model.addAttribute("allRoles", userService.getAllRoles());
         return "new";
     }
 
-    @PostMapping
-    public String create(Model model,
-                         @ModelAttribute("user") @Valid User user,
-                         @RequestParam List<String> listRoleId,
-                         BindingResult bindingResult) {
+    @PostMapping("/user/new")
+    public String create(
+            @ModelAttribute("user") @Valid User user,
+            BindingResult bindingResult,
+            Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allRoles", userService.getAllRoles());
             return "new";
         }
-        Set<Role> userRole = new HashSet<>();
-        for (String roleId : listRoleId) {
-            Role role = roleService.getRoleById(Long.parseLong(roleId));
-            userRole.add(role);
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(userRole);
         userService.create(user);
         return "redirect:/admin";
     }
