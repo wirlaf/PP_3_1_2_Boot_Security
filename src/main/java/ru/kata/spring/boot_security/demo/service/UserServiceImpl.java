@@ -2,7 +2,6 @@ package ru.kata.spring.boot_security.demo.service;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
@@ -11,26 +10,21 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     @Override
     public void create(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -42,18 +36,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void update(Long id, User updatedUser) {
-        Optional<User> userFromDb = userRepository.findById(id);
-        if (userFromDb.isPresent()) {
-            User existingUser = userFromDb.get();
-            existingUser.setFirstName(updatedUser.getFirstName());
-            existingUser.setLastName(updatedUser.getLastName());
-            existingUser.setEmail(updatedUser.getEmail());
-            existingUser.setAge(updatedUser.getAge());
-
-            existingUser.setRoles(updatedUser.getRoles());
-            userRepository.save(existingUser);
-        }
+    public void update(User user) {
+        userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
@@ -82,16 +66,6 @@ public class UserServiceImpl implements UserService {
         return roleRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public boolean emailExists(String email) {
-        return userRepository.findByEmail(email) != null;
-    }
 
-    @Transactional(readOnly = true)
-    @Override
-    public User getByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 }
 
