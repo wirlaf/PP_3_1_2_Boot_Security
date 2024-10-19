@@ -33,7 +33,7 @@ public class User implements UserDetails {
     private int age;
 
     @Column(unique = true)
-    @Email
+    @Email(message = "invalid format")
     private String email;
 
     @NotEmpty(message = "field should not be empty")

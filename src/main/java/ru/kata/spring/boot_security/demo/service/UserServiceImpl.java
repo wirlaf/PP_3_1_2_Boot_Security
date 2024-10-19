@@ -20,9 +20,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -31,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void create(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Шифрование пароля
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -47,10 +45,12 @@ public class UserServiceImpl implements UserService {
         Optional<User> userFromDb = userRepository.findById(id);
         if (userFromDb.isPresent()) {
             User existingUser = userFromDb.get();
+
             existingUser.setFirstName(updatedUser.getFirstName());
             existingUser.setLastName(updatedUser.getLastName());
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setAge(updatedUser.getAge());
+            existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
             existingUser.setRoles(updatedUser.getRoles());
 
             userRepository.save(existingUser);
@@ -94,5 +94,3 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email);
     }
 }
-
-

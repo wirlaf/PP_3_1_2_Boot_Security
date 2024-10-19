@@ -23,7 +23,7 @@
     </form>
 
     <form th:method="post" th:action="@{/admin/user/{id}/delete(id=${user.id})}">
-        <input type="hidden" name="_method" value="delete"/>
+        <input type="hidden" name="_method"/>
         <input type="submit" value="Delete"/>
     </form>
 </div>

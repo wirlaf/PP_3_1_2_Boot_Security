@@ -90,7 +90,6 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    // Вынесенный метод для получения ролей по ID
     private Set<Role> getRolesFromIds(List<String> roleIds) {
         Set<Role> userRoles = new HashSet<>();
         if (roleIds != null) {
